@@ -1,0 +1,20 @@
+library(h2o)
+h2o.init(nthreads = -1, max_mem_size = "6g")
+datasets <- "https://raw.githubusercontent.com/DarrenCook/h2o/bk/datasets/"
+data <- h2o.importFile(paste0(datasets,"iris_wheader.csv"))
+
+h2o.describe(data)
+
+y <- "class"
+x <- setdiff(names(data), y)
+
+parts <- h2o.splitFrame(data, 0.8)
+
+train <- parts[[1]]
+test <- parts[[2]]
+
+modelDL <- h2o.deeplearning(x, y, train)
+
+prediction <- h2o.predict(modelDL, test)
+
+h2o.performance(modelDL, test)
